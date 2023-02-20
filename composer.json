@@ -11,7 +11,9 @@
         "laravel/framework": "^9.0",
         "laravel/telescope": "^4.13",
         "spatie/laravel-data": "^3.1",
-        "tcg/voyager": "^1.6"
+        "supervisorphp/supervisor": "^5.1",
+        "tcg/voyager": "^1.6",
+      "ext-curl": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -61,7 +63,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": false
         }
     },
     "minimum-stability": "stable",
