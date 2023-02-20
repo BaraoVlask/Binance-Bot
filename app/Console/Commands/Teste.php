@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\StreamListenerJob;
 use Illuminate\Console\Command;
 
 
@@ -27,6 +26,6 @@ class Teste extends Command
      */
     public function handle(): void
     {
-        StreamListenerJob::dispatch();
+
     }
 }
