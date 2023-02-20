@@ -26,7 +26,7 @@ return [
     ],
 
     'supervisor' => [
-        'user' => 'n3ct4r',
-        'password' => 'r4tcen',
+        'user' => env('SUPERVISOR_USER'),
+        'password' => env('SUPERVISOR_PASSWORD'),
     ]
 ];
