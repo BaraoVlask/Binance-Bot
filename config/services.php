@@ -24,4 +24,9 @@ return [
             'api_secret' => env('BINANCE_API_SECRET'),
         ]
     ],
+
+    'supervisor' => [
+        'user' => 'n3ct4r',
+        'password' => 'r4tcen',
+    ]
 ];
