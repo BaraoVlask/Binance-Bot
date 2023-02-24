@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
-use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Laravel\Telescope\TelescopeApplicationServiceProvider;
 
@@ -18,17 +17,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         $this->hideSensitiveRequestDetails();
 
-        Telescope::filter(function (IncomingEntry $entry) {
-            if ($this->app->environment('local')) {
-                return true;
-            }
-
-            return $entry->isReportableException() ||
-                $entry->isFailedRequest() ||
-                $entry->isFailedJob() ||
-                $entry->isScheduledTask() ||
-                $entry->hasMonitoredTag();
-        });
+        Telescope::filter(fn() => true);
     }
 
     /**
@@ -57,9 +46,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewTelescope', function ($user) {
-            return in_array($user->email, [
-                //
-            ]);
+            return $user->email == 'guilherme@point2point.com.br';
         });
     }
 }
