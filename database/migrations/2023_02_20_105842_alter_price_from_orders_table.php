@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->float('price', 8, 8)
+            $table->unsignedFloat('price', 16, 8)
                 ->change();
         });
     }

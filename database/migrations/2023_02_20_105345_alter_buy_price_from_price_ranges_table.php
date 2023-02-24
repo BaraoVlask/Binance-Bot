@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('price_ranges', function (Blueprint $table) {
-            $table->float('buy_price', 8, 8)
+            $table->unsignedFloat('buy_price', 16, 8)
                 ->change();
         });
     }
@@ -27,7 +27,6 @@ return new class extends Migration {
     {
         Schema::table('price_ranges', function (Blueprint $table) {
             $table->float('buy_price')
-                ->unique()
                 ->change();
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->float('quantity', 8, 8)
+            $table->unsignedFloat('quantity', 16, 8)
                 ->change();
         });
     }

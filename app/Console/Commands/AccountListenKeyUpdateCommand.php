@@ -6,7 +6,7 @@ use App\Services\BinanceService;
 use Binance\Exception\MissingArgumentException;
 use Illuminate\Console\Command;
 
-class AccountListenKeyCommand extends Command
+class AccountListenKeyUpdateCommand extends Command
 {
     protected $signature = 'accountListenKey:update';
 

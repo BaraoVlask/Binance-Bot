@@ -8,11 +8,6 @@ class TelegramService
 {
     public static function sendMessage(string $message): void
     {
-        /** @var TelegraphChat[] $chats */
-        $chats = TelegraphChat::all();
-
-        foreach ($chats as $chat) {
-            $chat->html($message)->send();
-        }
+        TelegraphChat::all()->each(fn(TelegraphChat $chat) => $chat->html($message)->send());
     }
 }

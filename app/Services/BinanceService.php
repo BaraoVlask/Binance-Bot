@@ -22,6 +22,16 @@ class BinanceService
         );
     }
 
+    public static function getMarketLastPrice(string $symbol)
+    {
+        return self::getSpotClient()
+            ->tickerPrice(
+                [
+                    'symbol' => $symbol
+                ]
+            )['price'];
+    }
+
     public static function getWebsocketClient(): Websocket
     {
         $loop = Loop::get();
@@ -39,12 +49,12 @@ class BinanceService
 
     public static function getAccountListenerKey(): string
     {
-        return Cache::remember(
+        $key = Cache::get(
             'getAccountListenerKey',
-            59,
-            fn() => self::getSpotClient()
-                ->newListenKey()['listenKey']
+            self::getSpotClient()->newListenKey()['listenKey']
         );
+        Cache::forever('getAccountListenerKey', $key);
+        return $key;
     }
 
     /**
@@ -52,8 +62,15 @@ class BinanceService
      */
     public static function updateAccountListenerKey(string $key): bool
     {
-        return self::getSpotClient()
-                ->renewListenKey($key) == [];
+        return self::getSpotClient()->renewListenKey($key) === [];
+    }
+
+    /**
+     * @throws MissingArgumentException
+     */
+    public static function deleteAccountListenerKey(string $key): bool
+    {
+        return self::getSpotClient()->closeListenKey($key) === [];
     }
 
 }
