@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Binance\Exception\MissingArgumentException;
-use Binance\Spot;
+use App\Binance\Spot;
 use Illuminate\Support\Facades\Cache;
 use Ratchet\Client\Connector as ClientConnector;
 use React\EventLoop\Loop;

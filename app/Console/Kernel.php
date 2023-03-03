@@ -12,10 +12,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('heart:beat')
-            ->everyMinute();
+//        $schedule->command('heart:beat')
+//            ->everyMinute();
         $schedule->command('accountListenKey:update')
-            ->hourly()
+            ->everyThirtyMinutes()
             ->appendOutputTo(storage_path('logs/schedule.worker.out.log'));
     }
 
@@ -25,6 +25,12 @@ class Kernel extends ConsoleKernel
     protected function commands(): void
     {
         $this->load(__DIR__ . '/Commands');
+        $this->load(__DIR__ . '/Commands/Account');
+        $this->load(__DIR__ . '/Commands/Balance');
+        $this->load(__DIR__ . '/Commands/Monitor');
+        $this->load(__DIR__ . '/Commands/Orders');
+        $this->load(__DIR__ . '/Commands/Protection');
+        $this->load(__DIR__ . '/Commands/Symbol');
 
         require_once base_path('routes/console.php');
     }

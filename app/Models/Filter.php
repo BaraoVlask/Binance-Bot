@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\DTO\FilterFields;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,10 +11,11 @@ class Filter extends Model
 
     protected $fillable = [
         'name',
-        'fields'
+        'fields',
+        'symbol_id',
     ];
 
     protected $casts = [
-        'fields' => FilterFields::class
+        'fields' => 'object'
     ];
 }

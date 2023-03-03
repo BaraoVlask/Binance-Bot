@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
-use App\Models\AccountReport;
-use App\Models\Order;
+use App\Jobs\Streams\ExecutionReportJob;
+use App\Jobs\Streams\BalanceUpdateJob;
+use App\Jobs\Streams\OutboundAccountPositionJob;
+use App\Models\Report;
 use App\Services\BinanceService;
 use App\Services\TelegramService;
 use Exception;
@@ -35,29 +37,24 @@ class StreamListenerJob implements ShouldQueue, ShouldBeUnique
             ],
             [
                 'message' => function ($conn, $payload) {
-                    try {
-                        Log::channel('binance')
-                            ->info('Payload', json_decode($payload, true));
+                    Log::channel('binance')
+                        ->info('Payload', json_decode($payload, true));
 
-                        $message = json_decode($payload, false);
+                    $message = json_decode($payload, false);
 
-                        $accountReport = new AccountReport([
-                            'stream' => $message->data->e,
-                            'report' => $message->data,
-                        ]);
-                        $accountReport->save();
+                    $accountReport = new Report([
+                        'stream' => $message->data->e,
+                        'report' => $message->data,
+                    ]);
+                    $accountReport->save();
 
-                        match ($message->data->e) {
-                            'balanceUpdate' => HandleBalanceUpdateJob::dispatch($message->data),
-                            'executionReport' => ExecutionReportJob::dispatch($accountReport),
-                            'outboundAccountPosition' => OutboundAccountPositionJob::dispatch($message->data),
-                        };
-
-                    } catch (Exception $exception) {
-                        Log::error($exception->getMessage(), $exception->getTrace());
-                    }
+                    match ($message->data->e) {
+                        'balanceUpdate' => BalanceUpdateJob::dispatch($message->data),
+                        'executionReport' => ExecutionReportJob::dispatch($accountReport),
+                        'outboundAccountPosition' => OutboundAccountPositionJob::dispatch($message->data),
+                    };
                 },
-                'close' => fn($conn) => TelegramService::sendMessage('O robo parou de funcionar')
+                'close' => fn($conn) => TelegramService::sendMessage('O robo foi encerrado')
             ]
         );
     }

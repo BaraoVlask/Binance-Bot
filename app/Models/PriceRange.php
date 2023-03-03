@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Jobs\CreateOrderJob;
+use App\Jobs\Order\CreateOrderJob;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,22 +29,25 @@ class PriceRange extends Model
     }
 
     /**
-     * @return BelongsTo|Symbol
+     * @return HasMany|Order
      */
-    public function protectionSymbol(): BelongsTo|Symbol
-    {
-        return $this->belongsTo(Symbol::class, 'protection_symbol_id');
-    }
-
-    public function orders(): HasMany
+    public function orders(): HasMany|Order
     {
         return $this->hasMany(Order::class);
     }
 
-    public function quantity(): Attribute
+    /**
+     * @return Attribute|float
+     */
+
+    public function quantity(): Attribute|float
     {
         return Attribute::make(
-            get: fn($value) => round($this->amount / $this->buy_price, 1, PHP_ROUND_HALF_DOWN),
+            get: fn($value) => round(
+                $this->amount / $this->buy_price,
+                $this->symbol->stepSizeRound,
+                PHP_ROUND_HALF_DOWN
+            ),
         );
     }
 }

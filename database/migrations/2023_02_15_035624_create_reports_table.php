@@ -10,9 +10,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('symbols', function (Blueprint $table) {
+        Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->foreignId('order_id')
+                ->nullable()
+                ->references('id')
+                ->on('orders');
+            $table->string('binance_id')->unique();
+            $table->text('stream');
+            $table->json('report');
             $table->timestamps();
         });
     }
@@ -22,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('symbols');
+        Schema::dropIfExists('reports');
     }
 };

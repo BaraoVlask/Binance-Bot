@@ -14,7 +14,4 @@ use TCG\Voyager\Facades\Voyager;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/a', function () {
-    StreamListenerJob::dispatch();
-});
 Voyager::routes();

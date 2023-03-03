@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('symbol_id')
                 ->references('id')
                 ->on('symbols');
-            $table->float('buy_price')->unique();
-            $table->float('sell_price');
-            $table->float('amount');
+            $table->float('buy_price', 16, 8);
+            $table->float('sell_price', 16, 8);
+            $table->float('amount', 16, 8);
             $table->timestamps();
         });
     }

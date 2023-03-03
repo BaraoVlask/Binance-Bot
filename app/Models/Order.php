@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\OrderDatabaseTypeEnum;
 use App\Enums\OrderSideEnum;
 use App\Enums\OrderStatusEnum;
-use App\Jobs\CalculateProfitJob;
-use App\Jobs\OpenOrderJob;
+use App\Jobs\Order\CancelOrderJob;
+use App\Jobs\Order\OpenOrderJob;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,7 +26,6 @@ class Order extends Model
         'side',
         'type',
         'status',
-        'payload',
         'amount',
         'commission_coin',
         'commission_amount',
@@ -35,9 +33,7 @@ class Order extends Model
 
     protected $casts = [
         'side' => OrderSideEnum::class,
-        'type' => OrderDatabaseTypeEnum::class,
         'status' => OrderStatusEnum::class,
-        'payload' => 'array',
     ];
 
     protected static function boot()
@@ -45,14 +41,22 @@ class Order extends Model
         parent::boot();
 
         static::created(fn(Order $order) => OpenOrderJob::dispatch($order));
+        static::deleted(fn(Order $order) => CancelOrderJob::dispatch($order));
+    }
+
+    public function tag(): Attribute|string
+    {
+        return Attribute::make(
+            get: fn($value) => "{$this->symbol->name}[{$this->type->value}]:$this->price",
+        );
     }
 
     /**
      * @return bool
      */
-    public function isDefault(): bool
+    public function isDeleted(): bool
     {
-        return $this->type === OrderDatabaseTypeEnum::Normal;
+        return !empty($this->deleted_at);
     }
 
     public function priceRange(): BelongsTo|PriceRange
@@ -65,9 +69,16 @@ class Order extends Model
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
-    public function reports(): HasMany
+    public function accountReport(): Report|null
     {
-        return $this->hasMany(AccountReport::class);
+        return $this->accountReports()
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    public function accountReports(): HasMany
+    {
+        return $this->hasMany(Report::class, 'order_id');
     }
 
     public function coin(): BelongsTo
